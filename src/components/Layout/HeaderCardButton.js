@@ -6,9 +6,9 @@ const HeaderCartButton = (props) => {
   const cartQuantity = 0;
   
   return <button className={classes.button}>
-    <div className={classes.icon}><CartIcon/></div>
-    Your Cart
-    <div className={classes.badge}>{cartQuantity}</div>
+    <span className={classes.icon}><CartIcon/></span>
+    <span>Your Cart</span>
+    <span className={classes.badge}>{cartQuantity}</span>
   </button>;
 };
 

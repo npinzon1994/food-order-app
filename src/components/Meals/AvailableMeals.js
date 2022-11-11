@@ -1,20 +1,52 @@
 import React from "react";
-import classes from './AvailableMeals.module.css';
+import classes from "./AvailableMeals.module.css";
 import Card from "../UI/Card";
-import MealItem from "./MealItem";
-import DUMMY_MEALS from './dummy-meals';
+import MealItem from "./MealItem/MealItem";
 
-const AvailableMeals = props => {
-    const dummyMeals = DUMMY_MEALS;
-    
-    return <Card className={classes.meals}>
-        <ul>
-        {/*Need to create mealItems based on
-        the dummy array. Might have to use map()
-        
-        WILL DEFINITELY NEED STATE TO ADD ITEMS*/}
-        </ul>
+const DUMMY_MEALS = [
+  {
+    id: "m1",
+    name: "Sushi",
+    description: "Finest fish and veggies",
+    price: 22.99,
+  },
+  {
+    id: "m2",
+    name: "Schnitzel",
+    description: "A german specialty!",
+    price: 16.5,
+  },
+  {
+    id: "m3",
+    name: "Barbecue Burger",
+    description: "American, raw, meaty",
+    price: 12.99,
+  },
+  {
+    id: "m4",
+    name: "Green Bowl",
+    description: "Healthy...and green...",
+    price: 18.99,
+  },
+];
+
+const AvailableMeals = () => {
+  //helper function to make return statement leaner
+  const mealsList = DUMMY_MEALS.map((meal) => (
+    <MealItem
+      id={meal.id}
+      key={meal.id}
+      name={meal.name}
+      description={meal.description}
+      price={meal.price}
+    />
+  ));
+
+  return (
+    <Card className={classes.meals}>
+      <ul>{mealsList}</ul>
     </Card>
-}
+  );
+};
 
 export default AvailableMeals;

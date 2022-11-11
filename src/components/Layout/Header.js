@@ -6,10 +6,10 @@ import mainImg from "../../images/meals.jpg";
 const Header = (props) => {
   return (
     <Fragment>
-      <div className={classes.header}>
-        <h2>ReactMeals</h2>
+      <header className={classes.header}>
+        <h1>ReactMeals</h1>
         <HeaderCartButton />
-      </div>
+      </header>
       <div className={classes["main-image"]}>
         <img src={mainImg} alt="food laid out on buffet table" />
       </div>
