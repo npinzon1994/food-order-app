@@ -13,13 +13,14 @@ const Header = (props) => {
   
   I very well could use a useReducer because we want to 
   derive our state based on how many items are in our cart.
-  Therefore, we could dispatch an object with a itemsInCart
-  field as well as a whichModal field (a field that determines
-  which modal to display)
 
   Then the dispatch function could dispatch an action whose
   type field could forseeably be 'ITEMS_IN_CART' or 'NO_ITEMS_IN_CART'
-  and whose value could be true or false.
+  and whose isCartEmpty could be true or false and whose 
+  itemQuantity field could be equal to the integer value of
+  what is stored in our HeaderCartButton.
+
+  ^^^^I have no idea if this will work but I can try.
 
   Then, in the reducer function, we might be able to check if
   action.numItems > 0 and if so, give our state object a 

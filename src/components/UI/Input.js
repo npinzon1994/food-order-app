@@ -1,6 +1,12 @@
 import React from "react";
 import classes from './Input.module.css';
 
+/*
+Here we need a way of capturing the value in the input.
+Then we need a way of forwarding that input's value up to the
+MealItemForm component.
+*/
+
 const Input = props => {
     return <div className={classes.input}>
         <label htmlFor={props.input.id}>{props.label}</label>
