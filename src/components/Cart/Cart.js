@@ -1,33 +1,26 @@
-import React, {Fragment} from "react";
+import React, { useContext} from "react";
 import classes from "./Cart.module.css";
-
-/*
-This component will act as a list for all items in
-the user's cart. This component will be laid on top
-of a custom reusable MODAL component.
-*/
-
-/*
-We will definitely need STATE to manage our list
-*/
-
-//ALL CART ITEM PROPS - name, price, quantity -- onRemove, onAdd
+import Modal from "../UI/Modal";
+import CartContext from "../../context/cart-context";
 
 const Cart = (props) => {
+  const cartContext = useContext(CartContext);
+
   return (
-    <Fragment>
-      <ul className={classes["cart-items"]}>
-        
-      </ul>
-      <div className={classes.actions}>
-        <div className={classes.total}>
-          <span>Total Amount</span>
-          <span>$0</span>
-        </div>
-        <button onClick={props.onClose}>Close</button>
-        <button>Order</button>
+    <Modal onClose={props.onClose}>
+      <ul className={classes["cart-items"]}></ul>
+
+      <div className={classes.total}>
+        <span>Total Amount</span>
+        <span>{`$${cartContext.totalQuantity}`}</span>
       </div>
-    </Fragment>
+      <div className={classes.actions}>
+        <button onClick={props.onClose} className={classes["button--alt"]}>
+          Close
+        </button>
+        <button className={classes.button}>Order</button>
+      </div>
+    </Modal>
   );
 };
 

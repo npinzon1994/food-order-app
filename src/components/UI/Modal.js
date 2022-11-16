@@ -1,7 +1,6 @@
-import React from "react";
+import React, { Fragment } from "react";
 import ReactDOM from "react-dom";
 import classes from "./Modal.module.css";
-import Card from "./Card";
 
 //need a backdrop and modal overlay
 
@@ -10,21 +9,27 @@ const Backdrop = (props) => {
 };
 
 const ModalOverlay = (props) => {
-  return <Card className={classes.modal}>{props.children}</Card>;
+  return (
+    <div className={classes.modal} onClick={props.onClose}>
+      {props.children}
+    </div>
+  );
 };
+
+const portalElement = document.getElementById("overlays");
 
 const Modal = (props) => {
   return (
-    <div>
+    <Fragment>
       {ReactDOM.createPortal(
         <Backdrop onClose={props.onClose} />,
-        document.getElementById("backdrop-root")
+        portalElement
       )}
       {ReactDOM.createPortal(
-      <ModalOverlay onClose={props.onClose}>{props.children}</ModalOverlay>,
-      document.getElementById('overlay-root')
+        <ModalOverlay onClose={props.onClose}>{props.children}</ModalOverlay>,
+        portalElement
       )}
-    </div>
+    </Fragment>
   );
 };
 

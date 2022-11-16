@@ -1,7 +1,7 @@
 import React, {useContext} from "react";
 import classes from './MealItemForm.module.css';
 import Input from "../../UI/Input";
-import CartItemContext from "../../../context/cart-item-context";
+import CartContext from "../../../context/cart-context";
 
 /*
 We need a context. We need to be able to access the value
@@ -9,11 +9,11 @@ of the input in Input.js, MealItemForm.js (here), MealItem.js, CartItem.js
 */
 
 const MealItemForm = props => {
-    const inputContext = useContext(CartItemContext);
+    const cartContext = useContext(CartContext);
     
     
     const getInputValueHandler = (event) => {
-        inputContext.onSetInputValue(event.target.value);
+        // inputContext.onDispatchCartItem(event.target.value);
     }
 
     
