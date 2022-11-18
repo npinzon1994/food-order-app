@@ -11,7 +11,9 @@ const Backdrop = (props) => {
 const ModalOverlay = (props) => {
   return (
     <div className={classes.modal} onClick={props.onClose}>
+      <div className={classes.content}>
       {props.children}
+      </div>
     </div>
   );
 };

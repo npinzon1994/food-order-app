@@ -1,15 +1,13 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import Header from "./components/Layout/Header";
 import Meals from "./components/Meals/Meals";
 import Cart from "./components/Cart/Cart";
-import CartContext from "./context/cart-context";
 import CartProvider from "./context/CartProvider";
 
 function App() {
   //we manage state for the Cart here because this is where we render the Cart
 
   const [isCartVisible, setIsCartVisible] = useState(false);
-  const cartContext = useContext(CartContext);
 
   const showCartHandler = () => {
     setIsCartVisible(true);
