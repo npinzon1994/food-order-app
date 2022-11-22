@@ -40,6 +40,32 @@ const cartReducer = (state, action) => {
   }
 
   if (action.type === "REMOVE") {
+    //get index of item we're looking for
+    const existingCartItemIndex = state.items.findIndex(
+      (item) => item.id === action.id
+    );
+
+    //need current item to check its quantity
+    const existingCartItem = state.items[existingCartItemIndex];
+
+    //update total price
+    const updatedTotalPrice = state.totalPrice - existingCartItem.price;
+
+    //copy over items into temp array since items in array will change
+    let updatedItems;
+
+    if (existingCartItem.quantity === 1) {
+      //filters out items that aren't equal to current item's id
+      updatedItems = state.items.filter((item) => item.id !== action.id);
+    } else {
+      const updatedItem = {
+        ...existingCartItem,
+        quantity: existingCartItem.quantity - 1,
+      };
+      updatedItems = [...state.items];
+      updatedItems[existingCartItemIndex] = updatedItem;
+    }
+    return { items: updatedItems, totalPrice: updatedTotalPrice };
   }
 
   return defaultCartState;

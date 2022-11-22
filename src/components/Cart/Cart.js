@@ -11,11 +11,12 @@ const Cart = (props) => {
   const hasItems = cartContext.items.length > 0;
 
   const addItemHandler = (item) => {
-
+    //copying over rest of item but increasing amount by 1
+    cartContext.addItem({...item, quantity: 1});
   }
 
   const removeItemHandler = (id) => {
-
+    cartContext.removeItem(id);
   }
 
   const cartItems = cartContext.items.map((item) => (
