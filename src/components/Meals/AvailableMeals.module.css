@@ -10,6 +10,11 @@
     margin: 0;
     padding: 0;
   }
+
+  .big-text {
+    font-size: large;
+    text-align: center;
+  }
   
   @keyframes meals-appear {
     from {
