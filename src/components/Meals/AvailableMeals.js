@@ -1,25 +1,25 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./AvailableMeals.module.css";
 import Card from "../UI/Card";
 import MealItem from "./MealItem/MealItem";
 
 const AvailableMeals = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState();
   const [meals, setMeals] = useState([]);
 
-  const fetchMeals = useCallback(async() => {
-    try {
+  useEffect(() => {
+    const fetchMeals = async () => {
       const response = await fetch(
         "https://food-order-app-be8a0-default-rtdb.firebaseio.com/meals.json"
       );
 
-      if(!response.ok){
+      if (!response.ok) {
         throw new Error("Something went wrong!");
       }
 
       const data = await response.json();
-  
+
       //pull all data into an array of JS objects
       const loadedMeals = [];
       for (const key in data) {
@@ -31,16 +31,31 @@ const AvailableMeals = () => {
         });
       }
       setMeals(loadedMeals);
-    } catch(error){
+
+      setIsLoading(false);
+    };
+
+    fetchMeals().catch((error) => {
+      setIsLoading(false);
       setError(error.message);
-    }
-    
-    setIsLoading(false);
+    });
   }, []);
 
-  useEffect(() => {
-    fetchMeals();
-  }, [fetchMeals]);
+  if (isLoading) {
+    return (
+      <section className={classes["meals-loading"]}>
+        <p>Loading...</p>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className={classes["meals-error"]}>
+        <p>{error}</p>
+      </section>
+    );
+  }
 
   //helper function to make return statement leaner
   const mealsList = meals.map((meal) => (
@@ -53,20 +68,9 @@ const AvailableMeals = () => {
     />
   ));
 
-  let content = <p className={classes['big-text']}>Found no meals.</p>
-  if(meals.length > 0 && !isLoading) {
-    content = <ul>{mealsList}</ul>;
-  }
-  if(error) {
-    content = <p className={classes['big-text']}>{error}</p>
-  }
-  if(isLoading){
-    content = <p className={classes['big-text']}>Loading...</p>;
-  }
-
   return (
     <Card className={classes.meals}>
-      {content}
+      <ul>{mealsList}</ul>
     </Card>
   );
 };
