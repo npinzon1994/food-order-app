@@ -33,9 +33,30 @@ const Cart = (props) => {
     />
   ));
 
-  const orderHandler = () => {
+  const showCheckoutFormHandler = () => {
     setShowCheckoutForm(true);
   };
+
+  const fetchOrders = async(data) => {
+    //so now what do we do with the data? DISPLAY IT OFC!
+    
+    /*Now we need to take that data and make it work
+    with an ORDER SUMMARY PAGE (which we haven't yet implemented)*/
+  }
+  
+  //userData is coming from the checkout form
+  const submitOrderHandler = async (userData) => {
+
+    const orderData = {user: userData, orderedItems: cartContext.items}; //orderData is an OBJECT
+
+    const response = await fetch("https://food-order-app-be8a0-default-rtdb.firebaseio.com/orders.json", {
+      method: 'POST',
+      body: JSON.stringify(orderData),
+      headers: {'Content-Type': 'application/json'}
+    });
+
+    const data = await response.json();
+  }
 
   const modalActions = (
     <div className={classes.actions}>
@@ -43,7 +64,7 @@ const Cart = (props) => {
         Close
       </button>
       {hasItems && (
-        <button className={classes.button} onClick={orderHandler}>
+        <button className={classes.button} onClick={showCheckoutFormHandler}>
           Order
         </button>
       )}
@@ -59,7 +80,7 @@ const Cart = (props) => {
         <span>{totalPrice}</span>
       </div>
 
-      {showCheckoutForm && <CheckoutForm onClose={props.onClose} />}
+      {showCheckoutForm && <CheckoutForm onClose={props.onClose} onSubmitOrder={submitOrderHandler}/>}
       {!showCheckoutForm && modalActions}
     </Modal>
   );
