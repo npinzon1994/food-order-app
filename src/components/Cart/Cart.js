@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import classes from "./Cart.module.css";
 import Modal from "../UI/Modal";
 import CartContext from "../../context/cart-context";
@@ -7,7 +7,11 @@ import CheckoutForm from "./CheckoutForm";
 
 const Cart = (props) => {
   const cartContext = useContext(CartContext);
+
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isOrderProcessed, setIsOrderProcessed] = useState(false);
+  const [error, setError] = useState("");
 
   const totalPrice = `$${cartContext.totalPrice.toFixed(2)}`;
   const hasItems = cartContext.items.length > 0;
@@ -37,26 +41,38 @@ const Cart = (props) => {
     setShowCheckoutForm(true);
   };
 
-  const fetchOrders = async(data) => {
+  const fetchOrders = async (data) => {
     //so now what do we do with the data? DISPLAY IT OFC!
-    
     /*Now we need to take that data and make it work
     with an ORDER SUMMARY PAGE (which we haven't yet implemented)*/
-  }
-  
+  };
+
   //userData is coming from the checkout form
   const submitOrderHandler = async (userData) => {
+    setIsSubmitting(true);
+    const orderData = { user: userData, orderedItems: cartContext.items }; //orderData is an OBJECT
 
-    const orderData = {user: userData, orderedItems: cartContext.items}; //orderData is an OBJECT
+    try {
+      const response = await fetch(
+        "https://food-order-app-be8a0-default-rtdb.firebaseio.com/orders.json",
+        {
+          method: "POST",
+          body: JSON.stringify(orderData),
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
-    const response = await fetch("https://food-order-app-be8a0-default-rtdb.firebaseio.com/orders.json", {
-      method: 'POST',
-      body: JSON.stringify(orderData),
-      headers: {'Content-Type': 'application/json'}
-    });
+      if (!response.ok) {
+        throw new Error("Something went wrong!");
+      }
+    } catch (err) {
+      setError(err.message);
+    }
 
-    const data = await response.json();
-  }
+    setIsSubmitting(false);
+    setIsOrderProcessed(true);
+    cartContext.clearCart();
+  };
 
   const modalActions = (
     <div className={classes.actions}>
@@ -71,17 +87,55 @@ const Cart = (props) => {
     </div>
   );
 
+  const cartModalContent = (
+    <Fragment>
+      <ul className={classes["cart-items"]}>{cartItems}</ul>
+      {!isOrderProcessed && !error && (
+        <div className={classes.total}>
+          <span>Total Amount</span>
+          <span>{totalPrice}</span>
+        </div>
+      )}
+      {showCheckoutForm && (
+        <CheckoutForm
+          onClose={props.onClose}
+          onSubmitOrder={submitOrderHandler}
+        />
+      )}
+      {!showCheckoutForm && modalActions}
+    </Fragment>
+  );
+
+  const closeButton = (
+    <div className={classes.actions}>
+      <button onClick={props.onClose} className={classes.button}>
+        Close
+      </button>
+    </div>
+  );
+
+  const isSubmittingModalContent = <p>Submitting order...</p>;
+  const didSubmitModalContent = (
+    <Fragment>
+      <p>Order successful!</p>
+      {closeButton}
+    </Fragment>
+  );
+
+  const submissionHasError = (
+    <Fragment>
+      <p>{error}</p>
+      {closeButton}
+    </Fragment>
+  );
+
   //props.onClose, here, refers to the function defined in App.js that closes the cart
   return (
     <Modal onClose={props.onClose}>
-      <ul className={classes["cart-items"]}>{cartItems}</ul>
-      <div className={classes.total}>
-        <span>Total Amount</span>
-        <span>{totalPrice}</span>
-      </div>
-
-      {showCheckoutForm && <CheckoutForm onClose={props.onClose} onSubmitOrder={submitOrderHandler}/>}
-      {!showCheckoutForm && modalActions}
+      {error && submissionHasError}
+      {isOrderProcessed && !isSubmitting && !error && didSubmitModalContent}
+      {!isSubmitting && !isOrderProcessed && cartModalContent}
+      {!isOrderProcessed && isSubmitting && !error && isSubmittingModalContent}
     </Modal>
   );
 };

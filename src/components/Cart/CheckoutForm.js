@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import useInput from "../../hooks/use-input";
 import classes from "./CheckoutForm.module.css";
 
@@ -5,6 +6,11 @@ const isNotEmpty = (value) => value.trim() !== "";
 const hasFiveDigits = (value) => value.trim().length === 5;
 
 const CheckoutForm = (props) => {
+  const nameInputRef = useRef();
+  const streetInputRef = useRef();
+  const zipInputRef = useRef();
+  const cityInputRef = useRef();
+
   const {
     enteredValue: enteredName,
     inputIsValid: nameIsValid,
@@ -46,23 +52,33 @@ const CheckoutForm = (props) => {
   const confirmHandler = (event) => {
     event.preventDefault();
 
-    if (!formIsValid) {
+    if (formIsValid) {
+      //submit cart data
+      const userData = {
+        name: enteredName,
+        street: enteredStreet,
+        city: enteredCity,
+        zip: enteredZip,
+      };
+
+      props.onSubmitOrder(userData);
+      resetName();
+      resetStreet();
+      resetCity();
+      resetZip();
+    } else if (!nameIsValid) {
+      nameInputRef.current.focus();
+      return;
+    } else if (!streetIsValid) {
+      streetInputRef.current.focus();
+      return;
+    } else if (!zipIsValid) {
+      zipInputRef.current.focus();
+      return;
+    } else {
+      cityInputRef.current.focus();
       return;
     }
-
-    //submit cart data
-    const userData = {
-      name: enteredName,
-      street: enteredStreet,
-      city: enteredCity,
-      zip: enteredZip
-    }
-
-    props.onSubmitOrder(userData);
-    resetName();
-    resetStreet();
-    resetCity();
-    resetZip();
   };
 
   const nameControlClasses = `${classes.control} ${
@@ -88,6 +104,7 @@ const CheckoutForm = (props) => {
           onChange={nameChangeHandler}
           onBlur={nameOnBlurHandler}
           value={enteredName}
+          ref={nameInputRef}
         />
         {nameHasError && <p>Name cannot be empty!</p>}
       </div>
@@ -99,6 +116,7 @@ const CheckoutForm = (props) => {
           onChange={streetChangeHandler}
           onBlur={streetOnBlurHandler}
           value={enteredStreet}
+          ref={streetInputRef}
         />
         {streetHasError && <p>Street address cannot be empty!</p>}
       </div>
@@ -110,6 +128,7 @@ const CheckoutForm = (props) => {
           onChange={zipChangeHandler}
           onBlur={zipOnBlurHandler}
           value={enteredZip}
+          ref={zipInputRef}
         />
         {zipHasError && (
           <p>Please enter a valid zip code (5 characters long)!</p>
@@ -123,6 +142,7 @@ const CheckoutForm = (props) => {
           onChange={cityChangeHandler}
           onBlur={cityOnBlurHandler}
           value={enteredCity}
+          ref={cityInputRef}
         />
         {cityHasError && <p>City cannot be empty!</p>}
       </div>
